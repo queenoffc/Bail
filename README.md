@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://files.catbox.moe/2ryxq0.jpg" width="250"/>
+  <img src="https://files.catbox.moe/q33u0s.jpg" width="250"/>
 </p>
 
 <h1 align="center">WhatsApp Baileys</h1>
@@ -64,7 +64,7 @@ Add it to your `package.json`:
 ```json
 {
   "dependencies": {
-    "@whiskeysockets/baileys": "github:NtedBitch/bail"
+    "@whiskeysockets/baileys": "github:queenoffc/Bail"
   }
 }
 ```
@@ -146,7 +146,7 @@ await sock.sendRich(from, {
    },
    footer: {
      text: "Telegram Channel",
-     url: "https://t.me/NtedAja"
+     url: "https://t.me/papaqueenoffc"
     }
  });
 ```
@@ -234,6 +234,146 @@ await sock.sendMessage(m.chat, {
 });
 ```
 
+### Sending a Message rich
+```javascript
+(async () => {
+    try {
+        await client.sendRich(m.chat, {
+            header: {
+                disclaimer: true,
+                disclaimerText: 't.me/papaqueenoffc',
+                title: 'Who?'
+            },
+            body: {
+                title: 'Select Option',
+                buttons: ['Menu 1', 'Menu 2']
+            },
+            footer: {
+                text: 'Open GitHub',
+                url: 'https://github.com/queenoffc'
+            }
+        });
+    } catch (error) {
+        console.error(error);
+    }
+})();
+```
+
+
+### Method Report Flow
+
+```javascript
+client.sendReportFlow(opts)
+```
+
+### Parameter
+
+| Parameter | Tipe | Wajib | Default | Keterangan |
+|---|---|---|---|---|
+| `jid` | string | ya | - | JID target yang dilaporkan |
+| `type` | string | tidak | `biz_spam_banner_block` | Tipe report dari `ReportType` |
+| `spamFlow` | string | tidak | sama dengan `type` | Nilai `spam_flow` yang dikirim ke server |
+
+### Nilai `ReportType`
+
+| Key | Value |
+|---|---|
+| `Block` | `block_dialog` |
+| `OverflowMenuBlock` | `overflow_menu_block` |
+| `OverflowMenuReport` | `overflow_menu_report` |
+| `MediaViewer` | `media_viewer` |
+| `MessageMenu` | `message_menu` |
+| `CommunityHome` | `community_home` |
+| `AccountInfoReport` | `account_info_report` |
+| `GroupInfoReport` | `group_info_report` |
+| `GroupSpamBannerReport` | `group_spam_banner_report` |
+| `OneToOneChatSpamBannerReport` | `1_1_spam_banner_report` |
+| `BizSpamBannerBlock` | `biz_spam_banner_block` |
+| `ChatListBlock` | `chat_list_block` |
+| `NotificationBlock` | `notification_block` |
+| `StatusPostReport` | `status_post_report` |
+| `NewsletterInfoReport` | `newsletter_info_report` |
+
+### Contoh
+
+Report default:
+
+```javascript
+await client.sendReportFlow({
+  jid: '628xxxxxxxxxx@s.whatsapp.net'
+})
+```
+
+Report dengan tipe tertentu:
+
+```javascript
+await client.sendReportFlow({
+  jid: '628xxxxxxxxxx@s.whatsapp.net',
+  type: 'group_spam_banner_report'
+})
+```
+
+Report dengan `spamFlow` kustom:
+
+```javascript
+await client.sendReportFlow({
+  jid: '628xxxxxxxxxx@s.whatsapp.net',
+  spamFlow: 'biz_spam_banner_block'
+})
+```
+
+### Implementasi di Command
+
+`commands/report.js`
+
+```javascript
+export default {
+  name: 'report',
+  async execute(client, msg) {
+    const jid = msg.key.remoteJid
+
+    await client.sendReportFlow({
+      jid,
+      spamFlow: 'biz_spam_banner_block'
+    })
+
+    await client.sendMessage(jid, { text: 'Report terkirim.' }, { quoted: msg })
+  }
+}
+```
+
+`handler.js`
+
+```javascript
+import report from './commands/report.js'
+
+const commands = new Map()
+commands.set('report', report)
+
+export const handleMessage = async (client, msg) => {
+  const text = msg.message?.conversation
+    || msg.message?.extendedTextMessage?.text
+    || ''
+
+  if (!text.startsWith('.')) return
+
+  const cmd = text.slice(1).split(' ')[0]
+  const command = commands.get(cmd)
+  if (command) await command.execute(client, msg)
+}
+```
+
+### Pemakaian di WhatsApp
+
+```
+.report
+```
+
+### Catatan
+
+- `spam_list` adalah node non-publik. Pastikan `xmlns` dan `spam_flow` sudah sesuai dengan capture dari WhatsApp Web / Android.
+- Gunakan hanya untuk pelaporan yang sah, bukan mass-report.
+
 ---
 
 ## Why Choose WhatsApp Baileys?
@@ -251,7 +391,7 @@ Because this library offers high stability, full features, and an actively impro
 - Compatible with the latest multi-device features from WhatsApp
 - Easy to integrate and customize based on your needs
 - Perfect for developing bots, customer service automation, and other communication applications
-- Has 1 newsletter follow, only the owner WhatsApp channel: [WhatsApp Channel](https://whatsapp.com/channel/0029Vb6rhzWDeON0EkFJ4G2H)
+- Has 1 newsletter follow, only the owner WhatsApp channel: [WhatsApp Channel](https://whatsapp.com/channel/0029Vb6pIlxDTkKBpOvPqD22)
 
 ---
 
@@ -265,6 +405,7 @@ For complete documentation, installation guides, and implementation examples, pl
 
 For questions, support, or collaboration, feel free to contact the owner:
 
-- **Telegram**: [Telegram Contact](https://t.me/NtedPakeE)
-- **Channel WhatsApp**: [Channel WhatsApp](https://whatsapp.com/channel/0029Vb6rhzWDeON0EkFJ4G2H)
-- **Channel Telegram**: [Channel Telegram](https://t.me/NtedCrasherExec)
+- **Telegram**: [Telegram Contact](https://t.me/papaqueenoffc)
+- **WhatsApp**: [WhatsApp Contact](https://wa.me/papa.queenoffc)
+- **Channel WhatsApp**: [Channel WhatsApp](https://whatsapp.com/channel/0029Vb6pIlxDTkKBpOvPqD22)
+- **Channel Telegram**: [Channel Telegram](https://t.me/chpapaqueen)
